@@ -1,4 +1,7 @@
 import csv
+from winreg import HKEY_LOCAL_MACHINE
+
+from itsdangerous import want_bytes
 
 class Item:
     '''Class attribute, accessible from all instances'''
@@ -11,18 +14,18 @@ class Item:
         assert quantity >= 0, f"Quantity {quantity} is not greater than or equal to 0!"
         
         # Assign to self object
-        self.name = name
-        self.price = price
+        self.__name = name 
+        # leading single underscore = semiprivate
+        # leading double underscore = immutable & private
+        self.__price = price
         self.quantity = quantity
         
         Item.all.append(self)
         
     
     def calculate_total_price(self):
-        return self.price * self.quantity
+        return self.__price * self.quantity
     
-    def apply_discount(self):
-        self.price = self.price * self.pay_rate
         
     '''Make instantiate_from_csv a @classmethod because it cannot accept 'self' as an argument. 
     Can only be called from the class, not an instance.
@@ -67,8 +70,57 @@ class Item:
         
     def __repr__(self):
         # For parent/child classes, self.__class__.__name__ will display the name of the class in case of a child
-        return f"{self.__class__.__name__}('{self.name}', {self.price}, {self.quantity})"
+        return f"{self.__class__.__name__}('{self.name}', {self.__price}, {self.quantity})"
     
     @property
-    def read_only_name(self):
+    # @property decorator = Read Only Attribute
+    def name(self):
+        # cannot return self.name
+        return self.__name
+    
+    @name.setter
+    def name(self, new_name):
+        if len(new_name) > 10:
+            raise Exception("Name must be 10 characters or less!")
+        else:
+            self.__name = new_name
+            
+    @property
+    def price(self):
+        return self.__price
+    
+    @price.setter
+    def price(self, new_price):
+        if new_price < 0:
+            raise Exception("Price must be a positive number")
+        else:
+            self.__price = new_price
         
+    def apply_discount(self):
+        self.__price = self.__price * self.pay_rate
+        
+    def apply_increment(self, increment_value):
+        self.__price = self.__price + self.__price * increment_value
+        
+    ''' Abstraction - using dunder prefix for methods to obscure from users: '''
+    def __connect(self, smtp_server):
+        pass
+    
+    def __prepare_body(self):
+        return f"""
+        Hello Someone,
+        We have {self.name} {self.quantity} times.
+        Regards, Seani Wan
+        """
+        
+    def __send(self):
+        pass
+    
+    def send_email(self):
+        self.__connect('smtp')
+        self.__prepare_body()
+        self.__send()
+        
+    # send_email() uses the __methods (abstraction) so that
+    # the user can call send_email(), but none of the 
+    # abstracted methods

@@ -2,9 +2,23 @@ from item import Item
 from phone import Phone
 
 
-Item.instantiate_from_csv()
-print(Item.all)
+item1 = Item("MyItem", 750)
+item1.name = "OtherItem"
+# item1.price = 700.99
+item1.apply_discount()
+print(item1.price)
 
+
+
+
+
+
+
+
+
+
+# Item.instantiate_from_csv()
+# print(Item.all)
 
 # computer = Item("Comp1", 800, 3)
 # phone1 = Phone("sFone1.0", 500, 5, 1)
