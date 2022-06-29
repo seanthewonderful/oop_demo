@@ -1,15 +1,16 @@
 from item import Item
 from phone import Phone
+from keyboard import Keyboard
 
-
-item1 = Item("MyItem", 750)
+item1 = Item("MyItem", 1000)
 item1.name = "OtherItem"
 # item1.price = 700.99
 item1.apply_discount()
 print(item1.price)
 
-
-
+item2 = Keyboard("SeanBoard", 1000, 7)
+item2.apply_discount()
+print(item2.price)
 
 
 

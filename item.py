@@ -1,7 +1,4 @@
 import csv
-from winreg import HKEY_LOCAL_MACHINE
-
-from itsdangerous import want_bytes
 
 class Item:
     '''Class attribute, accessible from all instances'''
